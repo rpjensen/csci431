@@ -1,0 +1,39 @@
+# NetBeans specific #
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Class Files #
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+/BugCrawlViewer/nbproject/private/
+
+/List_Lab_08/nbproject/private/
+/Exam2_Practical/nbproject/private/
+/Lab09_JensenRyan/nbproject/private/
+
+/ShapesSupport/nbproject/private/
+
+/LargeIntegers/nbproject/private/
+/csci333_hw1/nbproject/private/
+/csci333_hw_jensen/nbproject/private/
+/ClientEditor/nbproject/private/
+/GUIFormExamples/nbproject/private/
+/jensen_csci333_hw5/nbproject/private/
+/jensen_csci333_hash_table/nbproject/private/
+/encryption_utility/nbproject/private/
+/jensen_csci333_bfs/nbproject/private/
+/encoding_testing/nbproject/private/
+/HW10MST/nbproject/private/
+
+.DS_Store
+/HWMemoryStarter/nbproject/private/
+/jensen_memory_manager/nbproject/private/
