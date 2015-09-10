@@ -63,44 +63,48 @@ public class CalcScanner {
     
     private int characterSetLookup(char c) {
         
+        
+        if (c == '$') {
+            return 0;
+        }
+        if (c == ':') {
+            return 1;
+        }
         if (c >= 48 && c <= 57) {
             // Number
-            return 0;
+            return 2;
         }
         if (c >= 65 && c <= 90) {
             // Upper case char
-            return 1;
+            return 3;
         }
         if (c >= 97 && c <= 122) {
             // Lower case char
-            return 2;
-        }
-        if (c == '$') {
-            return 3;
-        }
-        if (c == '(') {
             return 4;
         }
-        if (c == ')') {
+        if (c == '(') {
             return 5;
         }
-        if (c == '+') {
+        if (c == ')') {
             return 6;
         }
-        if (c == '-') {
+        if (c == '*') {
             return 7;
         }
-        if (c == '*') {
+        if (c == '+') {
             return 8;
         }
-        if (c == '/') {
+        if (c == '-') {
             return 9;
         }
-        if (c == ':') {
+        if (c == '/') {
             return 10;
         }
         if (c == '=') {
             return 11;
+        }
+        if (c == ' ') {
+            return 12;
         }
         return -1;
     }
