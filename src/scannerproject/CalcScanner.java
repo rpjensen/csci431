@@ -30,35 +30,90 @@ public class CalcScanner {
     private PushbackReader stream;
     private int[][] transitionTable;
     private int currentState;
+    private StringBuilder workingString;
     
     public CalcScanner(PushbackReader stream) {
         this.stream = stream;
-        this.currentState = 0;
+        currentState = 0;
+        workingString = new StringBuilder();
     }
     
     public int nextToken() throws IOException {
-        int nextChar = stream.read();
         
-        if (nextChar == -1) {
+    }
+    
+    private int nextTokenHelper() throws IOException {
+        int charCode = stream.read();
+        
+        if (charCode == -1) {
             return -1;
         }
-        int nextState = getNextState((char)nextChar);
+        
+        char c = (char)charCode;
+        workingString.append(c);
+        
+        int nextState = getNextState(c);
         
         if (nextState >= transitionTable.length) {
-            return checkFinalState(nextState);
+            return checkFinalState(nextState, c);
         }
         currentState = nextState;
         
         return -1;
     }
     
-    private int checkFinalState(int state) {
-        
-        return -1;
-    }
-    
     private int getNextState(char c) {
         return transitionTable[currentState][characterSetLookup(c)];
+    }
+    
+    private int checkFinalState(int state, char c) throws IOException {
+        switch (state) {
+            case 5:
+                return 0;
+            case 6:
+                return 9;
+            case 7:
+                stream.unread((int)c);
+                return 11;
+            case 8:
+                stream.unread((int)c);
+                int token = checkReservedWordTable(workingString.toString());
+                return token != -1 ? token : 10;
+            case 9:
+                return checkSingleTokenTable(c);
+            default:
+                return -1;
+        }
+    }
+    
+    private int checkReservedWordTable(String workingString) {
+        switch (workingString) {
+            case "read":
+                return 3;
+            case "write":
+                return 4;
+            default:
+                return -1;
+        }
+    }
+    
+    private int checkSingleTokenTable(char c) {
+        switch (c) {
+            case '(':
+                return 1;
+            case ')':
+                return 2;
+            case '+':
+                return 5;
+            case '-':
+                return 6;
+            case '*':
+                return 7;
+            case '/':
+                return 8;
+            default:
+                return -1;
+        }
     }
     
     private int[][] initializeTransitionTable() {
