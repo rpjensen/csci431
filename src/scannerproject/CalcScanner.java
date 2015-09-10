@@ -61,8 +61,17 @@ public class CalcScanner {
         return transitionTable[currentState][characterSetLookup(c)];
     }
     
+    private int[][] initializeTransitionTable() {
+        int[][] table = new int[5][13];
+        table[0] = new int[] { 1, 2, 3, 4, 4, 9, 9, 9, 9, 9, 9, 10, 0};
+        table[1] = new int[] { 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
+        table[2] = new int[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 6, 10 };
+        table[3] = new int[] { 7, 7, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };
+        table[4] = new int[] { 8, 8, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8 };
+        return table;
+    }
+    
     private int characterSetLookup(char c) {
-        
         
         if (c == '$') {
             return 0;
