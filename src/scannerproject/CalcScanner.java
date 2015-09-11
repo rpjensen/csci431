@@ -25,7 +25,10 @@ import java.util.HashSet;
  *  id      10 
  *  num     11
  *
- * @author rjensen
+ * @author Ryan Jensen
+ * @version Sep 10, 2015
+ * CSCI 431
+ * Project 1
  */
 public class CalcScanner {
 
@@ -40,9 +43,26 @@ public class CalcScanner {
         workingString = new StringBuilder();
     }
 
+    /**
+     *  ----- Lookup Table -----
+     *  $$      0 
+     *  (       1 
+     *  )       2 
+     *  read    3 
+     *  write   4 
+     *  +       5 
+     *  -       6 
+     *  *       7 
+     *  /       8 
+     *  :=      9 
+     *  id      10 
+     *  num     11
+     * @return token value of the scanned token, else -1.
+     * @throws IOException if the input stream given to the scanner was malformed.
+     */
     public int nextToken() throws IOException {
         // Add an extra method call to capture the returned value and 
-        // perform cleanup at a higher level
+        // perform cleanup at a higher level after the return statement.
         int token = nextTokenHelper();
         // clean up the state before return
         workingString = new StringBuilder();
@@ -76,7 +96,7 @@ public class CalcScanner {
 
     private int getNextState(char c) {
         if (currentState >= transitionTable.length) {
-            return -1;
+            return currentState;
         }
         return transitionTable[currentState][characterSetLookup(c)];
     }
