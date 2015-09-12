@@ -41,6 +41,7 @@ public class CalcScanner {
         this.stream = new PushbackReader(stream);
         currentState = 0;
         workingString = new StringBuilder();
+        transitionTable = initializeTransitionTable();
     }
 
     /**
@@ -69,6 +70,19 @@ public class CalcScanner {
         currentState = 0;
 
         return token;
+    }
+    
+    public boolean hasNextToken() throws IOException {
+        int charCode = stream.read();
+        
+            // end of stream
+        if (charCode == -1) {
+            return false;
+        }
+        else {
+            stream.unread(charCode);
+            return true;
+        }
     }
 
     private int nextTokenHelper() throws IOException {
@@ -202,7 +216,7 @@ public class CalcScanner {
         if (c == '=') {
             return 11;
         }
-        if (c == ' ') {
+        if (c == ' ' || c == '\n' || c == '\t') {
             return 12;
         }
         return -1;
