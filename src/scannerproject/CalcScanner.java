@@ -76,6 +76,7 @@ public class CalcScanner {
 
             // cast as char and append to working string
             c = (char) charCode;
+            
             workingString.append(c);
 
             currentState = getNextState(c);
@@ -96,7 +97,7 @@ public class CalcScanner {
         if (charSlot == -1) {
             return -1;
         }
-        return transitionTable[currentState][characterSetLookup(c)];
+        return transitionTable[currentState][charSlot];
     }
 
     private int checkFinalState(int state, char c) throws IOException {
@@ -106,11 +107,11 @@ public class CalcScanner {
             case 6:
                 return 9;
             case 7:
-                stream.unread((int) c);
+                unread(c);
                 return 11;
             case 8:
-                stream.unread((int) c);
-                int token = checkReservedWordTable(workingString.toString().trim());
+                unread(c);
+                int token = checkReservedWordTable(workingString.toString());
                 return token != -1 ? token : 10;
             case 9:
                 return checkSingleTokenTable(c);
@@ -200,19 +201,33 @@ public class CalcScanner {
         if (c == '=') {
             return 11;
         }
-        switch (c) {
-            case ' ':
-                break;
-            case '\n':
-                break;
-            case '\t':
-                break;
-            case 65535:
-                break;
-        }
-        if (c == ' ' || c == '\n' || c == '\t' || c == 65535) {
+        if (c == ' ' || c == '\n' || c == '\t' || c == '\uffff') {
+            if (workingString.length() == 1) {
+                workingString.setLength(workingString.length()-1);
+            }
             return 12;
         }
         return -1;
     }
+    
+    public void unread(char c) throws IOException {
+        if (c != '\uffff') {
+            stream.unread((int)c);
+        }
+        if (workingString.length() > 0) {
+                workingString.setLength(workingString.length()-1);
+        }
+        
+    }
+    
+    public int checkThrowOutCharacters(char c) {
+        if (c == ' ' || c == '\n' || c == '\t' || c == '\uffff') {
+            if (workingString.length() > 0) {
+                workingString.setLength(workingString.length()-1);
+            }
+            return 12;
+        }
+        return -1;
+    }
+    
 }

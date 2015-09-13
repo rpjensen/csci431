@@ -44,53 +44,58 @@ public class ScannerProject {
         ArrayList<Integer> myVal = new ArrayList<>();
         Random rand = new Random();
         StringBuilder programText = new StringBuilder();
-        int programLength = 10;
+        int programLength = 100;
         int maxIdentifierLength = 10;
         int maxNumberLength = 8;
 
-        int previousToken = -1;
+        int previousToken = 0;
         for (int i = 0; i < programLength; i++) {
-            int nextToken = rand.nextInt(13);
+            int nextToken;
+            if ((i + 1) == programLength) {
+                nextToken = rand.nextInt(12);
+            }
+            else {
+                nextToken = rand.nextInt(13);
+            }
             System.out.print(reverseLookup[nextToken]);
             if (nextToken < 12) {
                 trueVal.add(nextToken);
             }
             
+            String tokenVal = "";
             if (reverseLookup[nextToken].equals("id")) {
-                programText.append(buildIdentifier(maxIdentifierLength, rand));
-                programText.append(" ");
+                tokenVal = buildIdentifier(maxIdentifierLength, rand);
                 
             }
             else if (reverseLookup[nextToken].equals("num")) {
-                programText.append(buildNumber(maxNumberLength, rand));
-                programText.append(" ");
+                tokenVal = buildNumber(maxNumberLength, rand);
             }
             else {
-                programText.append(reverseLookup[nextToken]);
-                if (reverseLookup[nextToken].equals("read") || reverseLookup[nextToken].equals("write")) {
-                    programText.append(" ");
-                }
+                tokenVal = reverseLookup[nextToken];
             }
             
+            if (isSpecialToken(reverseLookup[previousToken]) && isSpecialToken(reverseLookup[nextToken])) {
+                programText.append(" ");
+            }
+            programText.append(tokenVal);
             previousToken = nextToken;
         }
         System.out.println();
 
-        if (programText.charAt(programText.length()-1) == ' ') {
-            programText.setLength(programText.length()-1);
-        }
+//        if (programText.charAt(programText.length()-1) == ' ') {
+//            programText.setLength(programText.length()-1);
+//        }
         
+        System.out.println(programText);
+
         StringReader program = new StringReader(programText.toString());
         CalcScanner scanner = new CalcScanner(program);
         while (scanner.hasNextToken()) {
             myVal.add(scanner.nextToken());
         }
 
-        if (programLength < 100) {
-            System.out.println(programText);
-            System.out.println("True:" + trueVal.size() + " \t\t" + trueVal.toString());
-            System.out.println("Parsed:" + trueVal.size() + " \t" + myVal.toString());
-        }
+        System.out.println("True:" + trueVal.size() + " \t\t" + trueVal.toString());
+        System.out.println("Parsed:" + trueVal.size() + " \t" + myVal.toString());
         int errorCount = 0;
         for (int i = 0; i < myVal.size(); i++) {
             int real = trueVal.get(i);
@@ -142,6 +147,10 @@ public class ScannerProject {
 
     public static int nextDigit(Random rand) {
         return rand.nextInt(10);
+    }
+    
+    public static boolean isSpecialToken(String val) {
+        return val.equals("read") || val.equals("write") || val.equals("id") || val.equals("num");
     }
 
 }
