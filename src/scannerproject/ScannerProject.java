@@ -21,36 +21,35 @@ public class ScannerProject {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        // TODO code application logic here
-        /**
+        /*
          * ----- Lookup Table ----- 
          * $$ 0 
          * ( 1 
          * ) 2 
          * read 3 
          * write 4 
-         * + 5 - 6 * 7 / 8
+         * + 5 
+         * - 6 
+         * * 7 
+         * / 8
          * := 9 
          * id 10 
          * num 11
          *
-         * @return token value of the scanned token, else -1.
-         * @throws IOException if the input stream given to the scanner was
-         * malformed.
          */
         String[] reverseLookup = {"$$", "(", ")", "read", "write", "+", "-", "*", "/", ":=", "id", "num", " "};
-        int length = reverseLookup.length;
         ArrayList<Integer> trueVal = new ArrayList<>();
         ArrayList<Integer> myVal = new ArrayList<>();
         Random rand = new Random();
         StringBuilder programText = new StringBuilder();
-        int programLength = 100;
+        int programLength = 1000;
         int maxIdentifierLength = 10;
         int maxNumberLength = 8;
 
         int previousToken = 0;
         for (int i = 0; i < programLength; i++) {
             int nextToken;
+            // Don't end on a space
             if ((i + 1) == programLength) {
                 nextToken = rand.nextInt(12);
             }
@@ -62,7 +61,7 @@ public class ScannerProject {
                 trueVal.add(nextToken);
             }
             
-            String tokenVal = "";
+            String tokenVal;
             if (reverseLookup[nextToken].equals("id")) {
                 tokenVal = buildIdentifier(maxIdentifierLength, rand);
                 
