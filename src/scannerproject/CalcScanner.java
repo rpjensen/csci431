@@ -11,8 +11,7 @@ import java.io.Reader;
 import java.util.HashSet;
 
 /**
- * ----- Lookup Table ----- $$ 0 ( 1 ) 2 read 3 write 4 + 5 - 6 * 7 / 8 := 9 id
- * 10 num 11
+ * A scanner for a small calculator language
  *
  * @author Ryan Jensen
  * @version Sep 10, 2015 CSCI 431 Project 1
@@ -32,8 +31,20 @@ public class CalcScanner {
     }
 
     /**
-     * ----- Lookup Table ----- $$ 0 ( 1 ) 2 read 3 write 4 + 5 - 6 * 7 / 8 := 9
-     * id 10 num 11
+     *
+     * ----- Lookup Table ----- <br>
+     * $$ ----- 0 <br>
+     * ( ------ 1 <br>
+     * ) ------ 2 <br>
+     * read --- 3 <br>
+     * write -- 4 <br>
+     * + ------ 5 <br>
+     * - ------ 6 <br>
+     * * ------ 7 <br>
+     * / ------ 8 <br>
+     * := ----- 9 <br>
+     * id ---- 10 <br>
+     * num --- 11 <br>
      *
      * @return token value of the scanned token, else -1.
      * @throws IOException if the input stream given to the scanner was
@@ -64,7 +75,7 @@ public class CalcScanner {
 
     private int nextTokenHelper() throws IOException {
         int charCode;
-        char c = (char) 0;
+        char c = (char) -1;
         while (currentState < transitionTable.length) {
             // Read the next character
             charCode = stream.read();
@@ -76,11 +87,12 @@ public class CalcScanner {
 
             // cast as char and append to working string
             c = (char) charCode;
-            
+
             workingString.append(c);
 
             currentState = getNextState(c);
-            
+
+            // Unrecognized token
             if (currentState == -1) {
                 return -1;
             }
@@ -94,6 +106,8 @@ public class CalcScanner {
             return currentState;
         }
         int charSlot = characterSetLookup(c);
+        
+        // Unrecognized token
         if (charSlot == -1) {
             return -1;
         }
@@ -203,31 +217,22 @@ public class CalcScanner {
         }
         if (c == ' ' || c == '\n' || c == '\t' || c == '\uffff') {
             if (workingString.length() == 1) {
-                workingString.setLength(workingString.length()-1);
+                workingString.setLength(workingString.length() - 1);
             }
             return 12;
         }
         return -1;
     }
-    
+
     public void unread(char c) throws IOException {
+        // -1 in char form
         if (c != '\uffff') {
-            stream.unread((int)c);
+            stream.unread((int) c);
         }
         if (workingString.length() > 0) {
-                workingString.setLength(workingString.length()-1);
+            workingString.setLength(workingString.length() - 1);
         }
-        
+
     }
-    
-    public int checkThrowOutCharacters(char c) {
-        if (c == ' ' || c == '\n' || c == '\t' || c == '\uffff') {
-            if (workingString.length() > 0) {
-                workingString.setLength(workingString.length()-1);
-            }
-            return 12;
-        }
-        return -1;
-    }
-    
+
 }

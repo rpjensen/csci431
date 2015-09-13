@@ -37,12 +37,12 @@ public class ScannerProject {
          * num 11
          *
          */
-        String[] reverseLookup = {"$$", "(", ")", "read", "write", "+", "-", "*", "/", ":=", "id", "num", " "};
+        String[] reverseLookup = {"$$", "(", ")", "read", "write", "+", "-", "*", "/", ":=", "id", "num", " ", "\t", "\n"};
         ArrayList<Integer> trueVal = new ArrayList<>();
         ArrayList<Integer> myVal = new ArrayList<>();
         Random rand = new Random();
         StringBuilder programText = new StringBuilder();
-        int programLength = 1000;
+        int programLength = 100;
         int maxIdentifierLength = 10;
         int maxNumberLength = 8;
 
@@ -54,38 +54,44 @@ public class ScannerProject {
                 nextToken = rand.nextInt(12);
             }
             else {
-                nextToken = rand.nextInt(13);
+                nextToken = rand.nextInt(reverseLookup.length);
             }
-            System.out.print(reverseLookup[nextToken]);
+            
+            
+            // If it is a white space then it is not a true token
             if (nextToken < 12) {
+                // Print out the token that is expected
+                System.out.print(reverseLookup[nextToken]);
                 trueVal.add(nextToken);
             }
             
             String tokenVal;
-            if (reverseLookup[nextToken].equals("id")) {
-                tokenVal = buildIdentifier(maxIdentifierLength, rand);
-                
-            }
-            else if (reverseLookup[nextToken].equals("num")) {
-                tokenVal = buildNumber(maxNumberLength, rand);
-            }
-            else {
-                tokenVal = reverseLookup[nextToken];
+            switch (reverseLookup[nextToken]) {
+                case "id":
+                    tokenVal = buildIdentifier(maxIdentifierLength, rand);
+                    break;
+                case "num":
+                    tokenVal = buildNumber(maxNumberLength, rand);
+                    break;
+                default:
+                    tokenVal = reverseLookup[nextToken];
+                    break;
             }
             
+            // If it is a consecutive special token (potential for ambigous start and stop)
+            // then add a space between them
             if (isSpecialToken(reverseLookup[previousToken]) && isSpecialToken(reverseLookup[nextToken])) {
                 programText.append(" ");
             }
             programText.append(tokenVal);
             previousToken = nextToken;
         }
-        System.out.println();
-
-//        if (programText.charAt(programText.length()-1) == ' ') {
-//            programText.setLength(programText.length()-1);
-//        }
         
+        System.out.println();
+        System.out.println("===================== Program start =====================");
         System.out.println(programText);
+        System.out.println("===================== Program end =======================");
+
 
         StringReader program = new StringReader(programText.toString());
         CalcScanner scanner = new CalcScanner(program);
@@ -93,7 +99,7 @@ public class ScannerProject {
             myVal.add(scanner.nextToken());
         }
 
-        System.out.println("True:" + trueVal.size() + " \t\t" + trueVal.toString());
+        System.out.println("True:" + trueVal.size() + " \t" + trueVal.toString());
         System.out.println("Parsed:" + trueVal.size() + " \t" + myVal.toString());
         int errorCount = 0;
         for (int i = 0; i < myVal.size(); i++) {
