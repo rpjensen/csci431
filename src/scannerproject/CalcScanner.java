@@ -11,24 +11,11 @@ import java.io.Reader;
 import java.util.HashSet;
 
 /**
- * ----- Lookup Table ----- 
- *  $$      0 
- *  (       1 
- *  )       2 
- *  read    3 
- *  write   4 
- *  +       5 
- *  -       6 
- *  *       7 
- *  /       8 
- *  :=      9 
- *  id      10 
- *  num     11
+ * ----- Lookup Table ----- $$ 0 ( 1 ) 2 read 3 write 4 + 5 - 6 * 7 / 8 := 9 id
+ * 10 num 11
  *
  * @author Ryan Jensen
- * @version Sep 10, 2015
- * CSCI 431
- * Project 1
+ * @version Sep 10, 2015 CSCI 431 Project 1
  */
 public class CalcScanner {
 
@@ -45,21 +32,12 @@ public class CalcScanner {
     }
 
     /**
-     *  ----- Lookup Table -----
-     *  $$      0 
-     *  (       1 
-     *  )       2 
-     *  read    3 
-     *  write   4 
-     *  +       5 
-     *  -       6 
-     *  *       7 
-     *  /       8 
-     *  :=      9 
-     *  id      10 
-     *  num     11
+     * ----- Lookup Table ----- $$ 0 ( 1 ) 2 read 3 write 4 + 5 - 6 * 7 / 8 := 9
+     * id 10 num 11
+     *
      * @return token value of the scanned token, else -1.
-     * @throws IOException if the input stream given to the scanner was malformed.
+     * @throws IOException if the input stream given to the scanner was
+     * malformed.
      */
     public int nextToken() throws IOException {
         // Add an extra method call to capture the returned value and 
@@ -71,15 +49,14 @@ public class CalcScanner {
 
         return token;
     }
-    
+
     public boolean hasNextToken() throws IOException {
         int charCode = stream.read();
-        
-            // end of stream
+
+        // end of stream
         if (charCode == -1) {
             return false;
-        }
-        else {
+        } else {
             stream.unread(charCode);
             return true;
         }
@@ -87,13 +64,13 @@ public class CalcScanner {
 
     private int nextTokenHelper() throws IOException {
         int charCode;
-        char c = (char)0;
+        char c = (char) 0;
         while (currentState < transitionTable.length) {
             // Read the next character
             charCode = stream.read();
 
             // end of stream
-            if (charCode == -1) {
+            if (charCode == -1 && workingString.length() == 0) {
                 return -1;
             }
 
@@ -102,15 +79,22 @@ public class CalcScanner {
             workingString.append(c);
 
             currentState = getNextState(c);
-
+            
+            if (currentState == -1) {
+                return -1;
+            }
         }
-        
+
         return checkFinalState(currentState, c);
     }
 
     private int getNextState(char c) {
         if (currentState >= transitionTable.length) {
             return currentState;
+        }
+        int charSlot = characterSetLookup(c);
+        if (charSlot == -1) {
+            return -1;
         }
         return transitionTable[currentState][characterSetLookup(c)];
     }
@@ -126,7 +110,7 @@ public class CalcScanner {
                 return 11;
             case 8:
                 stream.unread((int) c);
-                int token = checkReservedWordTable(workingString.toString());
+                int token = checkReservedWordTable(workingString.toString().trim());
                 return token != -1 ? token : 10;
             case 9:
                 return checkSingleTokenTable(c);
@@ -216,7 +200,17 @@ public class CalcScanner {
         if (c == '=') {
             return 11;
         }
-        if (c == ' ' || c == '\n' || c == '\t') {
+        switch (c) {
+            case ' ':
+                break;
+            case '\n':
+                break;
+            case '\t':
+                break;
+            case 65535:
+                break;
+        }
+        if (c == ' ' || c == '\n' || c == '\t' || c == 65535) {
             return 12;
         }
         return -1;
