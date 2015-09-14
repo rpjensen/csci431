@@ -8,7 +8,6 @@ package scannerproject;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
-import java.util.HashSet;
 
 /**
  * A scanner for a small calculator language

@@ -12,14 +12,13 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
+ * A testing class scanner for a small calculator language
  *
- * @author rjensen
+ * @author Ryan Jensen
+ * @version Sep 10, 2015 CSCI 431 Project 1
  */
 public class ScannerProject {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) throws IOException {
         /*
          * ----- Lookup Table ----- 
