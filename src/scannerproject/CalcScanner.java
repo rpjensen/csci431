@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package scannerproject;
 
 import java.io.IOException;
@@ -96,7 +92,6 @@ public class CalcScanner {
                 return -1;
             }
         }
-
         return checkFinalState(currentState, c);
     }
 
@@ -231,7 +226,5 @@ public class CalcScanner {
         if (workingString.length() > 0) {
             workingString.setLength(workingString.length() - 1);
         }
-
     }
-
 }
