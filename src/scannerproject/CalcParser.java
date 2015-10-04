@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.text.ParseException;
 
 /**
+ * A calculator parser.
  *
- * @author rjensen
+ * @author Ryan Jensen
+ * @version Oct 4, 2015 CSCI 431 Project 1
  */
 public class CalcParser {
 
@@ -34,29 +36,27 @@ public class CalcParser {
     }
 
     private void program() throws IOException, ParseException {
-        System.out.println("Program");
+//        System.out.println("Program");
         stmtList();
         match("$$");
     }
 
     private void stmtList() throws IOException, ParseException {
-        System.out.println("Statement list");
+//        System.out.println("Statement list");
 
-        while (checkLookahead("id") || checkLookahead("read") || checkLookahead("write")) {
+        while (hasStmt()) {
             stmt();
         }
     }
 
     private void stmt() throws IOException, ParseException {
-        System.out.println("Statement");
+//        System.out.println("Statement");
 
         if (checkLookahead("id")) {
             match("id");
             match(":=");
             expr();
         } else if (checkLookahead("read")) {
-            System.out.println("Read");
-
             match("read");
             match("id");
 
@@ -68,28 +68,35 @@ public class CalcParser {
         }
     }
 
+    private boolean hasStmt() {
+        return checkLookahead("id") || checkLookahead("read") || checkLookahead("write");
+    }
+
     private void expr() throws IOException, ParseException {
-        System.out.println("Expression");
+//        System.out.println("Expression");
 
         term();
-        while (checkLookahead("+")) {
-            match("+");
-            term();
-        }
+        termTail();
     }
 
     private void term() throws IOException, ParseException {
-        System.out.println("Term");
+//        System.out.println("Term");
 
         factor();
-        while (checkLookahead("*")) {
-            match("*");
-            factor();
+        factorTail();
+    }
+
+    private void termTail() throws IOException, ParseException {
+//        System.out.println("Term tail");
+        if (hasAddOp()) {
+            addOp();
+            term();
+            termTail();
         }
     }
 
     private void factor() throws IOException, ParseException {
-        System.out.println("Factor");
+//        System.out.println("Factor");
 
         if (checkLookahead("(")) {
             match("(");
@@ -104,6 +111,46 @@ public class CalcParser {
         }
     }
 
+    private void factorTail() throws IOException, ParseException {
+//        System.out.println("Factor Tail");
+        if (hasMultOp()) {
+            multOp();
+            factor();
+            factorTail();
+        }
+    }
+
+    private void addOp() throws IOException, ParseException {
+//        System.out.println("Add op");
+
+        if (checkLookahead("+")) {
+            match("+");
+        } else if (checkLookahead("-")) {
+            match("-");
+        } else {
+            match("Expected Add operation");
+        }
+    }
+
+    private boolean hasAddOp() {
+        return checkLookahead("+") || checkLookahead("-");
+    }
+
+    private void multOp() throws IOException, ParseException {
+//        System.out.println("Mult op");
+        if (checkLookahead("*")) {
+            match("*");
+        } else if (checkLookahead("/")) {
+            match("/");
+        } else {
+            match("Expected Mult operation");
+        }
+    }
+
+    private boolean hasMultOp() {
+        return checkLookahead("*") || checkLookahead("/");
+    }
+
     private void match(String token) throws IOException, ParseException {
         if (checkLookahead(token)) {
             index++;
@@ -113,7 +160,10 @@ public class CalcParser {
                 lookahead = -1;
             }
         } else {
-            throw new ParseException("Parse error at token " + lookup[lookahead] + " found " + token + " at index " + index, index);
+            if (lookahead == -1) {
+                throw new ParseException("Parse error at end of stream found " + token + " at index " + index, index);
+            }
+            throw new ParseException("Parse error at token " + lookup[lookahead] + ", expected " + token + " at index " + index, index);
         }
     }
 

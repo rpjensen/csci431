@@ -1,4 +1,4 @@
-read myNum
+read myNum otherId
 write 1 - 1 / 4
 myNum := (1-4*1) + otherNum
 $$

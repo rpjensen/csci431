@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * A testing class scanner for a small calculator language
