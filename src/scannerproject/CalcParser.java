@@ -27,56 +27,50 @@ public class CalcParser {
 
     }
 
-    private void match(String token) throws IOException, ParseException {
-        if (checkLookahead(token)) {
-            index++;
-            if (sc.hasNextToken()) {
-                lookahead = sc.nextToken();
-            }
-            else {
-                lookahead = -1;
-            }
-        } else {
-            throw new ParseException("Parse error at token " + lookup[lookahead] + " found " + token, index);
-        }
-    }
-
     public void parse() throws IOException, ParseException {
         lookahead = sc.nextToken();
         program();
         System.out.println("Parse successful");
     }
 
-    public void program() throws IOException, ParseException {
+    private void program() throws IOException, ParseException {
+        System.out.println("Program");
         stmtList();
         match("$$");
     }
 
-    public void stmtList() throws IOException, ParseException {
+    private void stmtList() throws IOException, ParseException {
+        System.out.println("Statement list");
+
         while (checkLookahead("id") || checkLookahead("read") || checkLookahead("write")) {
             stmt();
-        } 
+        }
     }
 
-    public void stmt() throws IOException, ParseException {
+    private void stmt() throws IOException, ParseException {
+        System.out.println("Statement");
+
         if (checkLookahead("id")) {
             match("id");
             match(":=");
             expr();
-        }
-        else if (checkLookahead("read")) {
+        } else if (checkLookahead("read")) {
+            System.out.println("Read");
+
             match("read");
             match("id");
-            
-        }
-        else if (checkLookahead("write")) {
+
+        } else if (checkLookahead("write")) {
             match("write");
             expr();
+        } else {
+            match("Expected Statement");
         }
-        match("Expected Statement");
     }
 
-    public void expr() throws IOException, ParseException {
+    private void expr() throws IOException, ParseException {
+        System.out.println("Expression");
+
         term();
         while (checkLookahead("+")) {
             match("+");
@@ -84,7 +78,9 @@ public class CalcParser {
         }
     }
 
-    public void term() throws IOException, ParseException {
+    private void term() throws IOException, ParseException {
+        System.out.println("Term");
+
         factor();
         while (checkLookahead("*")) {
             match("*");
@@ -92,27 +88,39 @@ public class CalcParser {
         }
     }
 
-    public void factor() throws IOException, ParseException {
+    private void factor() throws IOException, ParseException {
+        System.out.println("Factor");
+
         if (checkLookahead("(")) {
             match("(");
             expr();
             match(")");
-        }
-        else if (checkLookahead("id")) {
+        } else if (checkLookahead("id")) {
             match("id");
-        }
-        else if (checkLookahead("num")) {
+        } else if (checkLookahead("num")) {
             match("num");
-        }
-        else {
+        } else {
             match("Expected Factor");
         }
     }
-    
+
+    private void match(String token) throws IOException, ParseException {
+        if (checkLookahead(token)) {
+            index++;
+            if (sc.hasNextToken()) {
+                lookahead = sc.nextToken();
+            } else {
+                lookahead = -1;
+            }
+        } else {
+            throw new ParseException("Parse error at token " + lookup[lookahead] + " found " + token + " at index " + index, index);
+        }
+    }
+
     private boolean checkLookahead(String token) {
         return lookahead == reverseLookup(token);
     }
-    
+
     private int reverseLookup(String token) {
         for (int i = 0; i < lookup.length; i++) {
             if (lookup[i].equals(token)) {
